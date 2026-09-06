@@ -66,6 +66,9 @@ export default function CourtRecords() {
       {/* Editorial opening */}
       <section className="editorial-page-intro py-12 md:py-16">
         <div className="editorial-page-intro-inner max-w-4xl mx-auto px-4">
+          <div className="editorial-tool-icon w-12 h-12 mb-5">
+            <FileText className="h-6 w-6" />
+          </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">{t('courtRecords.hero.title')}</h1>
           <p className="text-lg md:text-xl max-w-3xl">
             {t('courtRecords.hero.subtitle')}
