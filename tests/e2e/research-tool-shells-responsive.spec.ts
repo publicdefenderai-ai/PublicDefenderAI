@@ -201,6 +201,19 @@ async function stubStateStatuteProviderOutage(page: Page) {
   });
 }
 
+async function stubStateStatuteResponseError(page: Page) {
+  await page.route("**/api/statutes/CA**", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        success: false,
+        error: "State statute provider returned an error",
+      }),
+    });
+  });
+}
+
 async function stubRecoveringStateStatuteProvider(page: Page) {
   let requestCount = 0;
 
@@ -445,6 +458,29 @@ for (const viewport of VIEWPORTS) {
           await page.getByRole("option", { name: "California" }).click();
 
           await expect(page.getByText(language.stateMessage)).toBeVisible();
+          await expectNoHorizontalOverflow(page);
+        },
+      );
+
+      test(
+        `${language.name} state statute response errors use localized guidance without overflow`,
+        async ({ page }) => {
+          await page.addInitScript(
+            (locale) => window.localStorage.setItem("i18nextLng", locale),
+            language.code,
+          );
+          await stubStateStatuteResponseError(page);
+
+          await page.goto("/statutes");
+          await expectEditorialOpening(page);
+          await page.getByTestId("tab-state").click();
+          await page.getByTestId("select-state").click();
+          await page.getByRole("option", { name: "California" }).click();
+
+          await expect(page.getByText(language.stateMessage)).toBeVisible();
+          await expect(
+            page.getByText("State statute provider returned an error"),
+          ).toHaveCount(0);
           await expectNoHorizontalOverflow(page);
         },
       );
