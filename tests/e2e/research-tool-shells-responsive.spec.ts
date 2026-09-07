@@ -201,6 +201,58 @@ async function stubStateStatuteProviderOutage(page: Page) {
   });
 }
 
+async function stubRecoveringStateStatuteProvider(page: Page) {
+  let requestCount = 0;
+
+  await page.route("**/api/statutes/CA**", async (route) => {
+    requestCount += 1;
+
+    if (requestCount === 1) {
+      await route.fulfill({
+        status: 503,
+        contentType: "application/json",
+        body: JSON.stringify({
+          success: false,
+          error: "State statute service unavailable",
+        }),
+      });
+      return;
+    }
+
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        success: true,
+        jurisdiction: "CA",
+        count: 1,
+        statutes: [
+          {
+            title: "California Battery Statute",
+            citation: "Cal. Penal Code § 242",
+            summary: "Recovered state statute fixture",
+          },
+        ],
+        source: "responsive-shell-recovery-fixture",
+      }),
+    });
+  });
+
+  await page.route("**/api/statutes/AL**", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        success: true,
+        jurisdiction: "AL",
+        count: 0,
+        statutes: [],
+        source: "responsive-shell-recovery-fixture",
+      }),
+    });
+  });
+}
+
 async function stubCitationNotFound(page: Page) {
   await page.unroute("**/api/openlaws/citation/**");
   await page.route("**/api/openlaws/citation/**", async (route) => {
@@ -393,6 +445,43 @@ for (const viewport of VIEWPORTS) {
           await page.getByRole("option", { name: "California" }).click();
 
           await expect(page.getByText(language.stateMessage)).toBeVisible();
+          await expectNoHorizontalOverflow(page);
+        },
+      );
+
+      test(
+        `${language.name} state statute browsing recovers after a temporary outage`,
+        async ({ page }) => {
+          await page.addInitScript(
+            (locale) => window.localStorage.setItem("i18nextLng", locale),
+            language.code,
+          );
+          await stubRecoveringStateStatuteProvider(page);
+
+          await page.goto("/statutes");
+          await expectEditorialOpening(page);
+          await page.getByTestId("tab-state").click();
+          await page.getByTestId("select-state").click();
+          await page.getByRole("option", { name: "California" }).click();
+
+          await expect(
+            page.getByText(language.stateMessage),
+          ).toBeVisible();
+
+          await page.getByTestId("select-state").click();
+          await page.getByRole("option", { name: "Alabama" }).click();
+          await expect(
+            page.getByText("0 statutes found"),
+          ).toBeVisible();
+
+          await page.getByTestId("select-state").click();
+          await page.getByRole("option", { name: "California" }).click();
+          await expect(
+            page.getByTestId("card-statute-cal--penal-code---242"),
+          ).toBeVisible();
+          await expect(
+            page.getByText("California Battery Statute"),
+          ).toBeVisible();
           await expectNoHorizontalOverflow(page);
         },
       );

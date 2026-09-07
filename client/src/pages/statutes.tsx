@@ -142,6 +142,7 @@ export default function StatutesPage() {
   } = useQuery<StatuteSearchResult>({
     queryKey: [stateUrl],
     enabled: !!selectedState,
+    retry: false,
   });
 
   const {
