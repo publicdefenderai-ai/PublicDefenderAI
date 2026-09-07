@@ -30,6 +30,8 @@ const LOCALIZED_STATUTE_ERRORS = [
       "No se reconoce ese formato de cita. Pruebe un formato estándar y vuelva a buscar.",
     citationNotFound:
       'No se encontró ningún estatuto para "Cal. Penal Code § 999999". Intente ajustar el formato de la cita o compruebe que sea correcto.',
+    cardCitationNotFound:
+      'No se encontró ningún estatuto para "Cal. Penal Code § 242". Intente ajustar el formato de la cita o compruebe que sea correcto.',
   },
   {
     code: "zh",
@@ -37,6 +39,8 @@ const LOCALIZED_STATUTE_ERRORS = [
     invalidCitation: "无法识别该引文格式。请尝试标准格式后重新搜索。",
     citationNotFound:
       "未找到“Cal. Penal Code § 999999”对应的法规。请调整引文格式或检查引文是否正确。",
+    cardCitationNotFound:
+      "未找到“Cal. Penal Code § 242”对应的法规。请调整引文格式或检查引文是否正确。",
   },
 ] as const;
 
@@ -435,6 +439,37 @@ for (const viewport of VIEWPORTS) {
           await page.getByTestId("input-citation-lookup").fill("Cal. Penal Code § 999999");
           await page.getByTestId("button-citation-lookup").click();
           await expect(page.getByText(language.citationNotFound)).toBeVisible();
+          await expectNoHorizontalOverflow(page);
+        },
+      );
+
+      test(
+        `${language.name} opened statute card shows localized missing-text guidance without overflow`,
+        async ({ page }) => {
+          await page.addInitScript(
+            (locale) => window.localStorage.setItem("i18nextLng", locale),
+            language.code,
+          );
+
+          await stubStatuteCardProviderOutage(page);
+          await stubCitationInvalid(page);
+          await page.goto("/statutes");
+          await expectEditorialOpening(page);
+          await page
+            .getByTestId("button-full-text-cal--penal-code---242")
+            .click();
+          await expect(page.getByText(language.invalidCitation)).toBeVisible();
+          await expectNoHorizontalOverflow(page);
+
+          await stubCitationNotFound(page);
+          await page.goto("/statutes");
+          await expectEditorialOpening(page);
+          await page
+            .getByTestId("button-full-text-cal--penal-code---242")
+            .click();
+          await expect(
+            page.getByText(language.cardCitationNotFound),
+          ).toBeVisible();
           await expectNoHorizontalOverflow(page);
         },
       );
