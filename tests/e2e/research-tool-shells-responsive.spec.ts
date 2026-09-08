@@ -5,6 +5,11 @@ const VIEWPORTS = [
   { name: "mobile", width: 390, height: 844 },
 ] as const;
 
+const EXTRA_NARROW_MOBILE_VIEWPORT = {
+  width: 320,
+  height: 844,
+} as const;
+
 const LOCALIZED_STATUTE_OUTAGES = [
   {
     code: "es",
@@ -636,3 +641,39 @@ for (const viewport of VIEWPORTS) {
     }
   });
 }
+
+test.describe("localized state statute errors at an extra-narrow mobile width", () => {
+  test.use({ viewport: EXTRA_NARROW_MOBILE_VIEWPORT });
+
+  test.beforeEach(async ({ page }) => {
+    await page.addInitScript(() => {
+      window.localStorage.setItem("i18nextLng", "en");
+    });
+    await stubInitialServiceRequests(page);
+  });
+
+  for (const language of LOCALIZED_STATUTE_OUTAGES) {
+    test(
+      `${language.name} state statute response errors remain visible without horizontal overflow`,
+      async ({ page }) => {
+        await page.addInitScript(
+          (locale) => window.localStorage.setItem("i18nextLng", locale),
+          language.code,
+        );
+        await stubStateStatuteResponseError(page);
+
+        await page.goto("/statutes");
+        await expectEditorialOpening(page);
+        await page.getByTestId("tab-state").click();
+        await page.getByTestId("select-state").click();
+        await page.getByRole("option", { name: "California" }).click();
+
+        await expect(page.getByText(language.stateMessage)).toBeVisible();
+        await expect(
+          page.getByText("State statute provider returned an error"),
+        ).toHaveCount(0);
+        await expectNoHorizontalOverflow(page);
+      },
+    );
+  }
+});
