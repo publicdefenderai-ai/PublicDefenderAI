@@ -231,6 +231,70 @@ async function mockVerifiedCitation(page: Page) {
   });
 }
 
+async function mockSharedVerifiedCitation(page: Page) {
+  await page.route("**/api/openlaws/citation/**", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        success: true,
+        statute: {
+          title: "Manslaughter",
+          citation: "Fla. Stat. § 782.07",
+          content:
+            "The killing of a human being by the act, procurement, or culpable negligence of another is manslaughter.",
+          jurisdiction: "FL",
+          section: "782.07",
+          url: "https://openlaws.example/statutes/fl/782.07",
+        },
+      }),
+    });
+  });
+}
+
+async function mockFloridaAuthorityWithSharedCitation(page: Page) {
+  await page.route("**/api/criminal-charges?*", async (route) => {
+    const url = new URL(route.request().url());
+    if (url.searchParams.get("jurisdiction") !== "FL") {
+      await route.continue();
+      return;
+    }
+
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        success: true,
+        count: 3,
+        totalAvailable: 3,
+        charges: [
+          {
+            id: "fl-murder-in-the-first-degree",
+            code: "782.04(1)",
+            citation: "Fla. Stat. § 782.04(1)",
+            name: "Murder in the First Degree",
+            category: "felony",
+          },
+          {
+            id: "fl-voluntary-manslaughter",
+            code: "782.07(1)",
+            citation: "Fla. Stat. § 782.07",
+            name: "Voluntary Manslaughter",
+            category: "felony",
+          },
+          {
+            id: "fl-involuntary-manslaughter",
+            code: "782.07(1)",
+            citation: "Fla. Stat. § 782.07",
+            name: "Involuntary Manslaughter",
+            category: "felony",
+          },
+        ],
+      }),
+    });
+  });
+}
+
 async function mockDelayedCitation(page: Page) {
   await page.route("**/api/openlaws/citation/**", async (route) => {
     await new Promise((resolve) => setTimeout(resolve, 1_000));
@@ -446,6 +510,61 @@ for (const language of LOCALIZED_ERRORS) {
     },
   );
 }
+
+test("matching charges reuse shared live statute text", async ({ page }) => {
+  await page.setViewportSize(MOBILE_VIEWPORT);
+  let citationRequests = 0;
+  page.on("request", (request) => {
+    if (request.url().includes("/api/openlaws/citation/")) {
+      citationRequests += 1;
+    }
+  });
+  await mockGuidanceStream(page, {
+    chargeClassifications: [
+      {
+        id: "fl-voluntary-manslaughter",
+        code: "782.07(1)",
+        name: "Voluntary Manslaughter",
+        classification: "felony",
+      },
+      {
+        id: "fl-involuntary-manslaughter",
+        code: "782.07(1)",
+        name: "Involuntary Manslaughter",
+        classification: "felony",
+      },
+    ],
+  });
+  await mockFloridaAuthorityWithSharedCitation(page);
+  await mockSharedVerifiedCitation(page);
+
+  await openQAFlow(page);
+  await selectJurisdiction(page);
+  await selectCharge(page);
+  await completeStatus(page);
+
+  await expect(page.getByTestId("button-close-dashboard")).toBeVisible({
+    timeout: 30_000,
+  });
+  const statuteToggles = page.getByTestId("live-statute-toggle");
+  await expect(statuteToggles).toHaveCount(2);
+
+  await statuteToggles.nth(0).click();
+  const firstPanel = page.getByTestId("live-statute-panel").nth(0);
+  await expect(firstPanel).toContainText("The killing of a human being");
+  await expect.poll(() => citationRequests).toBe(1);
+
+  await statuteToggles.nth(1).click();
+  const statutePanels = page.getByTestId("live-statute-panel");
+  await expect(statutePanels).toHaveCount(2);
+  await expect(statutePanels.nth(1)).toContainText(
+    "The killing of a human being by the act, procurement, or culpable negligence of another is manslaughter.",
+  );
+  await expect(statutePanels.nth(1)).not.toContainText(
+    "Fetching statute from OpenLaws...",
+  );
+  expect(citationRequests).toBe(1);
+});
 
 for (const language of LOCALIZED_ERRORS) {
   test(
