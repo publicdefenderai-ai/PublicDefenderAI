@@ -3806,6 +3806,7 @@ export default {
     },
     "errors": {
       "loadFailed": "Statute search is temporarily unavailable. Please try again later.",
+      "retry": "Try again",
       "citationFailed": "The official-text provider is temporarily unavailable. Please try the citation lookup again later.",
       "invalidCitation": "That citation format isn't recognized. Try a standard citation format and search again.",
       "citationNotFound": "No statute found for \"{{citation}}\". Try adjusting the citation format or check that the citation is correct."

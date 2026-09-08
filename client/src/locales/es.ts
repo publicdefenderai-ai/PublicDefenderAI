@@ -3808,6 +3808,7 @@ export default {
     },
     "errors": {
       "loadFailed": "La búsqueda de estatutos no está disponible temporalmente. Inténtelo de nuevo más tarde.",
+      "retry": "Intentar de nuevo",
       "citationFailed": "El proveedor del texto oficial no está disponible temporalmente. Vuelva a intentar la consulta de citas más tarde.",
       "invalidCitation": "No se reconoce ese formato de cita. Pruebe un formato estándar y vuelva a buscar.",
       "citationNotFound": "No se encontró ningún estatuto para \"{{citation}}\". Intente ajustar el formato de la cita o compruebe que sea correcto."

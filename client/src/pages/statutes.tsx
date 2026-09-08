@@ -138,7 +138,9 @@ export default function StatutesPage() {
   const {
     data: stateStatutes,
     isLoading: loadingState,
+    isFetching: fetchingState,
     error: stateError,
+    refetch: refetchStateStatutes,
   } = useQuery<StatuteSearchResult>({
     queryKey: [stateUrl],
     enabled: !!selectedState,
@@ -156,6 +158,12 @@ export default function StatutesPage() {
 
   const handleSearch = () => {
     setActiveSearchQuery(searchQuery);
+  };
+
+  const handleStateRetry = () => {
+    if (selectedState) {
+      void refetchStateStatutes();
+    }
   };
 
   const handleCitationLookup = () => {
@@ -281,7 +289,7 @@ export default function StatutesPage() {
                   Please select a state to view its criminal statutes
                 </AlertDescription>
               </Alert>
-            ) : loadingState ? (
+            ) : loadingState || fetchingState ? (
               <div className="space-y-4">
                 {[1, 2, 3].map((i) => (
                   <Card key={i} className="editorial-card">
@@ -299,12 +307,38 @@ export default function StatutesPage() {
             ) : stateError ? (
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{t('statutes.errors.loadFailed')}</AlertDescription>
+                <AlertDescription className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+                  <span>{t('statutes.errors.loadFailed')}</span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleStateRetry}
+                    disabled={fetchingState}
+                    className="w-full sm:w-auto"
+                    data-testid="button-retry-state-statutes"
+                  >
+                    {fetchingState && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {t('statutes.errors.retry')}
+                  </Button>
+                </AlertDescription>
               </Alert>
             ) : stateStatutes?.error ? (
               <Alert variant="destructive">
                 <AlertCircle className="h-4 w-4" />
-                <AlertDescription>{t('statutes.errors.loadFailed')}</AlertDescription>
+                <AlertDescription className="flex flex-col items-start gap-3 sm:flex-row sm:items-center">
+                  <span>{t('statutes.errors.loadFailed')}</span>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={handleStateRetry}
+                    disabled={fetchingState}
+                    className="w-full sm:w-auto"
+                    data-testid="button-retry-state-statutes"
+                  >
+                    {fetchingState && <Loader2 className="h-4 w-4 animate-spin" />}
+                    {t('statutes.errors.retry')}
+                  </Button>
+                </AlertDescription>
               </Alert>
             ) : (
               <>

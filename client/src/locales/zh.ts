@@ -3807,6 +3807,7 @@ export default {
     },
     "errors": {
       "loadFailed": "法规搜索暂时不可用。请稍后重试。",
+      "retry": "重试",
       "citationFailed": "官方文本服务商暂时不可用。请稍后重试引文查询。",
       "invalidCitation": "无法识别该引文格式。请尝试标准格式后重新搜索。",
       "citationNotFound": "未找到“{{citation}}”对应的法规。请调整引文格式或检查引文是否正确。"
