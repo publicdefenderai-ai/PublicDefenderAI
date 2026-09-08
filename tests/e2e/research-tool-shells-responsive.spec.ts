@@ -49,6 +49,24 @@ const LOCALIZED_STATUTE_ERRORS = [
   },
 ] as const;
 
+const LOCALIZED_STATUTE_LOADING = [
+  {
+    code: "en",
+    name: "English",
+    message: "Fetching statute from OpenLaws...",
+  },
+  {
+    code: "es",
+    name: "Spanish",
+    message: "Obteniendo el estatuto de OpenLaws...",
+  },
+  {
+    code: "zh",
+    name: "Chinese",
+    message: "正在从 OpenLaws 获取法规……",
+  },
+] as const;
+
 async function expectNoHorizontalOverflow(page: Page) {
   // Wait for the authored intro and route transitions to settle before
   // measuring transformed elements.
@@ -294,6 +312,27 @@ async function stubCitationInvalid(page: Page) {
       body: JSON.stringify({
         success: false,
         error: "Invalid citation format",
+      }),
+    });
+  });
+}
+
+async function stubDelayedCitationLookup(page: Page) {
+  await page.route("**/api/openlaws/citation/**", async (route) => {
+    await new Promise((resolve) => setTimeout(resolve, 500));
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        success: true,
+        statute: {
+          id: "responsive-shell-live-statute",
+          citation: "Cal. Penal Code § 242",
+          jurisdiction: "California",
+          title: "Battery",
+          content: "A person who commits battery is guilty under this section.",
+          section: "242",
+        },
       }),
     });
   });
@@ -578,6 +617,52 @@ for (const viewport of VIEWPORTS) {
 
           await expect(page.getByText(language.message)).toBeVisible();
           await expectNoHorizontalOverflow(page);
+        },
+      );
+    }
+
+    for (const language of LOCALIZED_STATUTE_LOADING) {
+      test(
+        `${language.name} live statute loading is announced politely`,
+        async ({ page }) => {
+          await page.addInitScript(
+            (locale) => window.localStorage.setItem("i18nextLng", locale),
+            language.code,
+          );
+          await stubDelayedCitationLookup(page);
+
+          await page.goto("/statutes");
+          await expectEditorialOpening(page);
+          await page.getByTestId("tab-lookup").click();
+          await page
+            .getByTestId("input-citation-lookup")
+            .fill("Cal. Penal Code § 242");
+          await page.getByTestId("button-citation-lookup").click();
+
+          const citationLoadingStatus = page.getByTestId("citation-loading-status");
+          await expect(citationLoadingStatus).toBeVisible();
+          await expect(citationLoadingStatus).toHaveAttribute("role", "status");
+          await expect(citationLoadingStatus).toHaveAttribute("aria-live", "polite");
+          await expect(citationLoadingStatus).toHaveAttribute("aria-atomic", "true");
+          await expect(citationLoadingStatus).toContainText(language.message);
+          await expect(page.getByTestId("card-citation-result")).toBeVisible();
+
+          await stubStatuteCardProviderOutage(page);
+          await page.goto("/statutes");
+          await expectEditorialOpening(page);
+          await page
+            .getByTestId("button-full-text-cal--penal-code---242")
+            .click();
+
+          const cardLoadingStatus = page.getByTestId("statute-card-loading-status");
+          await expect(cardLoadingStatus).toBeVisible();
+          await expect(cardLoadingStatus).toHaveAttribute("role", "status");
+          await expect(cardLoadingStatus).toHaveAttribute("aria-live", "polite");
+          await expect(cardLoadingStatus).toHaveAttribute("aria-atomic", "true");
+          await expect(cardLoadingStatus).toContainText(language.message);
+          await expect(
+            page.getByText("A person who commits battery is guilty under this section."),
+          ).toBeVisible();
         },
       );
     }

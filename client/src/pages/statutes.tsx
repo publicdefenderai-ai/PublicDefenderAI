@@ -385,9 +385,15 @@ export default function StatutesPage() {
               </div>
 
               {loadingCitation && (
-                <div className="flex items-center gap-3 py-8 text-muted-foreground">
-                  <Loader2 className="h-5 w-5 animate-spin" />
-                  <span>Fetching from OpenLaws...</span>
+                <div
+                  role="status"
+                  aria-live="polite"
+                  aria-atomic="true"
+                  data-testid="citation-loading-status"
+                  className="flex items-center gap-3 py-8 text-muted-foreground"
+                >
+                  <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
+                  <span>{t('statutes.liveText.fetching')}</span>
                 </div>
               )}
 
@@ -593,9 +599,15 @@ function StatuteCard({ statute }: { statute: Statute }) {
             {showFullText && (
               <div className="mt-3">
                 {loadingLive ? (
-                  <div className="flex items-center gap-2 py-4 text-muted-foreground text-sm">
-                    <Loader2 className="h-4 w-4 animate-spin" />
-                    <span>Fetching from OpenLaws...</span>
+                  <div
+                    role="status"
+                    aria-live="polite"
+                    aria-atomic="true"
+                    data-testid="statute-card-loading-status"
+                    className="flex items-center gap-2 py-4 text-muted-foreground text-sm"
+                  >
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                    <span>{t('statutes.liveText.fetching')}</span>
                   </div>
                 ) : liveContent ? (
                   <div>
