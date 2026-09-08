@@ -698,6 +698,35 @@ test.describe("localized state statute errors at an extra-narrow mobile width", 
 
   for (const language of LOCALIZED_STATUTE_ERRORS) {
     test(
+      `${language.name} citation lookup errors remain visible without horizontal overflow`,
+      async ({ page }) => {
+        await page.addInitScript(
+          (locale) => window.localStorage.setItem("i18nextLng", locale),
+          language.code,
+        );
+
+        await stubCitationInvalid(page);
+        await page.goto("/statutes");
+        await expectEditorialOpening(page);
+        await page.getByTestId("tab-lookup").click();
+        await page
+          .getByTestId("input-citation-lookup")
+          .fill("not a citation");
+        await page.getByTestId("button-citation-lookup").click();
+        await expect(page.getByText(language.invalidCitation)).toBeVisible();
+        await expectNoHorizontalOverflow(page);
+
+        await stubCitationNotFound(page);
+        await page
+          .getByTestId("input-citation-lookup")
+          .fill("Cal. Penal Code § 999999");
+        await page.getByTestId("button-citation-lookup").click();
+        await expect(page.getByText(language.citationNotFound)).toBeVisible();
+        await expectNoHorizontalOverflow(page);
+      },
+    );
+
+    test(
       `${language.name} opened statute card missing-text guidance remains visible without horizontal overflow`,
       async ({ page }) => {
         await page.addInitScript(
