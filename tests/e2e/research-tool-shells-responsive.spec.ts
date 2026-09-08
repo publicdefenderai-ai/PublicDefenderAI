@@ -598,12 +598,14 @@ for (const viewport of VIEWPORTS) {
           await page.getByTestId("input-citation-lookup").fill("not a citation");
           await page.getByTestId("button-citation-lookup").click();
           await expect(page.getByText(language.invalidCitation)).toBeVisible();
+          await expect(page.getByRole("alert")).toContainText(language.invalidCitation);
           await expectNoHorizontalOverflow(page);
 
           await stubCitationNotFound(page);
           await page.getByTestId("input-citation-lookup").fill("Cal. Penal Code § 999999");
           await page.getByTestId("button-citation-lookup").click();
           await expect(page.getByText(language.citationNotFound)).toBeVisible();
+          await expect(page.getByRole("alert")).toContainText(language.citationNotFound);
           await expectNoHorizontalOverflow(page);
         },
       );
@@ -624,6 +626,7 @@ for (const viewport of VIEWPORTS) {
             .getByTestId("button-full-text-cal--penal-code---242")
             .click();
           await expect(page.getByText(language.invalidCitation)).toBeVisible();
+          await expect(page.getByRole("alert")).toContainText(language.invalidCitation);
           await expectNoHorizontalOverflow(page);
 
           await stubCitationNotFound(page);
@@ -635,6 +638,7 @@ for (const viewport of VIEWPORTS) {
           await expect(
             page.getByText(language.cardCitationNotFound),
           ).toBeVisible();
+          await expect(page.getByRole("alert")).toContainText(language.cardCitationNotFound);
           await expectNoHorizontalOverflow(page);
         },
       );

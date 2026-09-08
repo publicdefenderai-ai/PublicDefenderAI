@@ -392,7 +392,11 @@ export default function StatutesPage() {
               )}
 
               {!loadingCitation && (citationError || citationResult?.error) && (
-                <Alert variant="destructive">
+                <Alert
+                  variant="destructive"
+                  aria-live="assertive"
+                  aria-atomic="true"
+                >
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>
                     {t(`statutes.errors.${getLiveStatuteErrorKey(citationError, citationResult?.error)}`, {
@@ -452,7 +456,11 @@ export default function StatutesPage() {
                     </CardContent>
                   </Card>
                 ) : (
-                  <Alert variant="destructive">
+                  <Alert
+                    variant="destructive"
+                    aria-live="assertive"
+                    aria-atomic="true"
+                  >
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
                       {t('statutes.errors.citationNotFound', { citation: activeCitation })}
@@ -599,7 +607,11 @@ function StatuteCard({ statute }: { statute: Statute }) {
                     </p>
                   </div>
                 ) : liveError || liveData?.error ? (
-                  <Alert variant="destructive">
+                  <Alert
+                    variant="destructive"
+                    aria-live="assertive"
+                    aria-atomic="true"
+                  >
                     <AlertCircle className="h-4 w-4" />
                     <AlertDescription>
                       {t(`statutes.errors.${liveFailureKey}`, { citation: statute.citation })}
