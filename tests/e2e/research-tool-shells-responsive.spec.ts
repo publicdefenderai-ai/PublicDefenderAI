@@ -654,6 +654,25 @@ test.describe("localized state statute errors at an extra-narrow mobile width", 
 
   for (const language of LOCALIZED_STATUTE_OUTAGES) {
     test(
+      `${language.name} opened statute card outage guidance remains visible without horizontal overflow`,
+      async ({ page }) => {
+        await page.addInitScript(
+          (locale) => window.localStorage.setItem("i18nextLng", locale),
+          language.code,
+        );
+        await stubStatuteCardProviderOutage(page);
+        await stubCitationProviderOutage(page);
+
+        await page.goto("/statutes");
+        await expectEditorialOpening(page);
+        await page.getByTestId("button-full-text-cal--penal-code---242").click();
+
+        await expect(page.getByText(language.message)).toBeVisible();
+        await expectNoHorizontalOverflow(page);
+      },
+    );
+
+    test(
       `${language.name} state statute response errors remain visible without horizontal overflow`,
       async ({ page }) => {
         await page.addInitScript(
@@ -672,6 +691,39 @@ test.describe("localized state statute errors at an extra-narrow mobile width", 
         await expect(
           page.getByText("State statute provider returned an error"),
         ).toHaveCount(0);
+        await expectNoHorizontalOverflow(page);
+      },
+    );
+  }
+
+  for (const language of LOCALIZED_STATUTE_ERRORS) {
+    test(
+      `${language.name} opened statute card missing-text guidance remains visible without horizontal overflow`,
+      async ({ page }) => {
+        await page.addInitScript(
+          (locale) => window.localStorage.setItem("i18nextLng", locale),
+          language.code,
+        );
+
+        await stubStatuteCardProviderOutage(page);
+        await stubCitationInvalid(page);
+        await page.goto("/statutes");
+        await expectEditorialOpening(page);
+        await page
+          .getByTestId("button-full-text-cal--penal-code---242")
+          .click();
+        await expect(page.getByText(language.invalidCitation)).toBeVisible();
+        await expectNoHorizontalOverflow(page);
+
+        await stubCitationNotFound(page);
+        await page.goto("/statutes");
+        await expectEditorialOpening(page);
+        await page
+          .getByTestId("button-full-text-cal--penal-code---242")
+          .click();
+        await expect(
+          page.getByText(language.cardCitationNotFound),
+        ).toBeVisible();
         await expectNoHorizontalOverflow(page);
       },
     );
