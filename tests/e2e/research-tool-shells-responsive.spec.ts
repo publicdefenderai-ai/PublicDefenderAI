@@ -523,6 +523,41 @@ for (const viewport of VIEWPORTS) {
       );
 
       test(
+        `${language.name} state statute browsing recovers after a page reload`,
+        async ({ page }) => {
+          await page.addInitScript(
+            (locale) => window.localStorage.setItem("i18nextLng", locale),
+            language.code,
+          );
+          await stubRecoveringStateStatuteProvider(page);
+
+          await page.goto("/statutes");
+          await expectEditorialOpening(page);
+          await page.getByTestId("tab-state").click();
+          await page.getByTestId("select-state").click();
+          await page.getByRole("option", { name: "California" }).click();
+
+          await expect(page.getByText(language.stateMessage)).toBeVisible();
+          await expectNoHorizontalOverflow(page);
+
+          await page.reload();
+          await expectEditorialOpening(page);
+          await page.getByTestId("tab-state").click();
+          await page.getByTestId("select-state").click();
+          await page.getByRole("option", { name: "California" }).click();
+
+          await expect(
+            page.getByTestId("card-statute-cal--penal-code---242"),
+          ).toBeVisible();
+          await expect(
+            page.getByText("California Battery Statute"),
+          ).toBeVisible();
+          await expect(page.getByText(language.stateMessage)).toHaveCount(0);
+          await expectNoHorizontalOverflow(page);
+        },
+      );
+
+      test(
         `${language.name} opened statute card outage guidance remains visible without overflow`,
         async ({ page }) => {
           await page.addInitScript(
