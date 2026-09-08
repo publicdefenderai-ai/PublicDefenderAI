@@ -398,6 +398,12 @@ for (const language of LOCALIZED_ERRORS) {
         (locale) => window.localStorage.setItem("i18nextLng", locale),
         language.code,
       );
+      let citationRequests = 0;
+      page.on("request", (request) => {
+        if (request.url().includes("/api/openlaws/citation/")) {
+          citationRequests += 1;
+        }
+      });
       await mockGuidanceStream(page);
       await mockVerifiedCitation(page);
 
@@ -427,9 +433,16 @@ for (const language of LOCALIZED_ERRORS) {
         statuteCard.getByRole("link", { name: language.viewOnOpenLaws }),
       ).toHaveAttribute("href", "https://openlaws.example/statutes/fl/782.04/1");
       await expectReadableWithinMobileViewport(page, statuteCard);
+      await expect.poll(() => citationRequests).toBe(1);
 
       await statuteToggle.click();
       await expect(statuteToggle).toHaveAccessibleName(language.readLaw);
+      await statuteToggle.click();
+      await expect(statuteToggle).toHaveAccessibleName(language.hideStatuteText);
+      await expect(page.getByTestId("live-statute-panel")).toContainText(
+        "A person is guilty of murder in the first degree if the killing is premeditated.",
+      );
+      expect(citationRequests).toBe(1);
     },
   );
 }

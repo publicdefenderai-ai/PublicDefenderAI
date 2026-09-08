@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { JuryInstructionBadge } from "@/components/legal/jury-instruction-badge";
 import { useTranslation } from "react-i18next";
@@ -483,16 +483,27 @@ function ChargeReadTheLaw({ jurisdiction, citation }: { jurisdiction: string; ci
   const { t } = useTranslation();
   const [showStatute, setShowStatute] = useState(false);
   const [fetchEnabled, setFetchEnabled] = useState(false);
+  const [loadedCitation, setLoadedCitation] = useState<string | null>(null);
 
   const encodedCitation = encodeURIComponent(citation);
 
   const { data: liveData, isLoading, error: liveError } = useQuery<LiveStatuteResult>({
     queryKey: [`/api/openlaws/citation/${encodedCitation}`],
-    enabled: fetchEnabled,
+    enabled: fetchEnabled && loadedCitation !== citation,
+    // Live statute text should be reused when the disclosure is toggled closed
+    // and open again instead of issuing another request for the same citation.
+    staleTime: Infinity,
+    refetchOnMount: false,
   });
 
+  useEffect(() => {
+    if (liveData?.success && liveData.statute && loadedCitation !== citation) {
+      setLoadedCitation(citation);
+    }
+  }, [citation, liveData, loadedCitation]);
+
   const handleToggle = () => {
-    if (!showStatute) setFetchEnabled(true);
+    setFetchEnabled(!showStatute);
     setShowStatute(prev => !prev);
   };
 
