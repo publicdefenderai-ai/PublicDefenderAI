@@ -482,6 +482,7 @@ for (const viewport of VIEWPORTS) {
           await page.getByTestId("button-citation-lookup").click();
 
           await expect(page.getByText(language.message)).toBeVisible();
+          await expect(page.getByRole("alert")).toContainText(language.message);
           await expectNoHorizontalOverflow(page);
         },
       );
@@ -616,6 +617,7 @@ for (const viewport of VIEWPORTS) {
           await page.getByTestId("button-full-text-cal--penal-code---242").click();
 
           await expect(page.getByText(language.message)).toBeVisible();
+          await expect(page.getByRole("alert")).toContainText(language.message);
           await expectNoHorizontalOverflow(page);
         },
       );
@@ -757,6 +759,7 @@ test.describe("localized state statute errors at an extra-narrow mobile width", 
         await page.getByTestId("button-full-text-cal--penal-code---242").click();
 
         await expect(page.getByText(language.message)).toBeVisible();
+        await expect(page.getByRole("alert")).toContainText(language.message);
         await expectNoHorizontalOverflow(page);
       },
     );
