@@ -9,7 +9,7 @@ describe("committed New York deployment seed", () => {
 
     expect(manifest.source).toBe("NY Open Legislation API (legislation.nysenate.gov)");
     expect(manifest.catalogRecords).toHaveLength(121);
-    expect(seed.sources).toHaveLength(88);
+    expect(seed.sources).toHaveLength(89);
     expect(seed.snapshots).toHaveLength(96);
     expect(seed.links).toHaveLength(96);
     expect(seed.selectableChargeIds).toHaveLength(94);

@@ -6,6 +6,9 @@ sentencing commission data for KS, NC, and MO.
 Outputs: scripts/data-review/output/gap-analysis-report.json
          scripts/data-review/output/gap-analysis-summary.txt
 
+The catalog is exported directly from shared/criminal-charges.ts through the
+small TypeScript exporter in this directory. No generated /tmp input is needed.
+
 For each state reports:
   - Charges we have that have NO plausible match in the authoritative source
     (potential phantom / wrong jurisdiction)
@@ -17,11 +20,14 @@ For each state reports:
 
 import json
 import re
+import subprocess
 import unicodedata
 from pathlib import Path
 from collections import defaultdict
 
 OUTPUT_DIR = Path(__file__).parent / "output"
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+CATALOG_EXPORTER = PROJECT_ROOT / "scripts" / "data-review" / "export-catalog-charges.ts"
 
 # ── Text normalization for fuzzy matching ─────────────────────────────────────
 
@@ -89,9 +95,23 @@ def extract_section(citation: str) -> str:
 
 # ── Load data ─────────────────────────────────────────────────────────────────
 
-def load_our_charges(state: str) -> list[dict]:
-    with open("/tmp/our_charges.json") as f:
-        all_charges = json.load(f)
+def load_all_our_charges() -> list[dict]:
+    """Load the checked-in TypeScript catalog without a fragile temp file."""
+    tsx = PROJECT_ROOT / "node_modules" / ".bin" / "tsx"
+    command = [str(tsx if tsx.exists() else "npx"), str(CATALOG_EXPORTER)]
+    if command[0] == "npx":
+        command.insert(1, "tsx")
+    result = subprocess.run(
+        command,
+        cwd=PROJECT_ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    return json.loads(result.stdout)
+
+
+def load_our_charges(state: str, all_charges: list[dict]) -> list[dict]:
     return [c for c in all_charges if c["jurisdiction"] == state]
 
 
@@ -126,10 +146,16 @@ def load_authoritative(state: str) -> list[dict]:
     return [e for e in all_data if e["state"] == state]
 
 
+def load_authoritative_states() -> list[str]:
+    with open(OUTPUT_DIR / "parsed-state-charges.json") as f:
+        all_data = json.load(f)
+    return sorted({entry["state"] for entry in all_data if entry.get("state")})
+
+
 # ── Analysis ──────────────────────────────────────────────────────────────────
 
-def analyze_state(state: str) -> dict:
-    our_charges = load_our_charges(state)
+def analyze_state(state: str, all_charges: list[dict]) -> dict:
+    our_charges = load_our_charges(state, all_charges)
     our_citations = load_our_citations(state)
     auth_charges = load_authoritative(state)
 
@@ -258,12 +284,13 @@ def main():
     if state_arg:
         states = [s.strip() for s in state_arg.split(",")]
     else:
-        states = ["KS", "NC", "MO", "MD", "MI", "PA"]
+        states = load_authoritative_states()
 
     results = {}
+    all_charges = load_all_our_charges()
 
     for state in states:
-        results[state] = analyze_state(state)
+        results[state] = analyze_state(state, all_charges)
 
     # Write full report
     report_path = OUTPUT_DIR / "gap-analysis-report.json"

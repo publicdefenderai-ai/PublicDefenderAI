@@ -33,30 +33,8 @@
         },
         {
           "kind": "missing_import",
-          "rows": 21,
-          "chargeIds": [
-            "ca-accessory-after-the-fact",
-            "ca-assault-in-the-second-degree",
-            "ca-assault-in-the-third-degree",
-            "ca-child-sexual-abuse",
-            "ca-computer-fraud",
-            "ca-conspiracy",
-            "ca-criminal-solicitation",
-            "ca-disturbing-the-peace",
-            "ca-dui-first-offense",
-            "ca-failure-to-appear",
-            "ca-grand-theft-in-the-first-degree",
-            "ca-identity-theft",
-            "ca-illegal-fireworks",
-            "ca-indecent-exposure",
-            "ca-insurance-fraud",
-            "ca-open-container",
-            "ca-protective-order-violation",
-            "ca-rape-in-the-first-degree",
-            "ca-sexual-assault-in-the-second-degree",
-            "ca-sexual-assault-in-the-third-degree",
-            "ca-statutory-rape"
-          ],
+          "rows": 0,
+          "chargeIds": [],
           "summary": "The row is in the catalog but has no imported source record.",
           "nextStep": "Add the row to the committed manifest and repeat seed validation."
         },
@@ -83,19 +61,41 @@
         },
         {
           "kind": "identity_review",
-          "rows": 0,
-          "chargeIds": [],
+          "rows": 21,
+          "chargeIds": [
+            "ca-accessory-after-the-fact",
+            "ca-assault-in-the-second-degree",
+            "ca-assault-in-the-third-degree",
+            "ca-child-sexual-abuse",
+            "ca-computer-fraud",
+            "ca-conspiracy",
+            "ca-criminal-solicitation",
+            "ca-disturbing-the-peace",
+            "ca-dui-first-offense",
+            "ca-failure-to-appear",
+            "ca-grand-theft-in-the-first-degree",
+            "ca-identity-theft",
+            "ca-illegal-fireworks",
+            "ca-indecent-exposure",
+            "ca-insurance-fraud",
+            "ca-open-container",
+            "ca-protective-order-violation",
+            "ca-rape-in-the-first-degree",
+            "ca-sexual-assault-in-the-second-degree",
+            "ca-sexual-assault-in-the-third-degree",
+            "ca-statutory-rape"
+          ],
           "summary": "Source material exists, but the catalog identity is not exact enough to publish.",
           "nextStep": "Review the exact section, subdivision, and catalog mapping before publication."
         }
       ],
       "gapCounts": {
         "source_access": 0,
-        "missing_import": 21,
+        "missing_import": 0,
         "stale_record": 0,
         "incomplete_text": 0,
         "technical_seed_failure": 0,
-        "identity_review": 0
+        "identity_review": 21
       },
       "staleRows": 0,
       "manifestPath": null,
@@ -106,7 +106,7 @@
     {
       "jurisdiction": "FL",
       "source": "Florida Legislature Online Sunshine (leg.state.fl.us/statutes)",
-      "manifestGeneratedAt": "2026-08-28T21:46:20.631Z",
+      "manifestGeneratedAt": "2026-09-10T05:01:21.123Z",
       "catalogRows": 117,
       "rowsWithOfficialResponse": 116,
       "selectableRows": 25,
@@ -146,17 +146,17 @@
         },
         {
           "kind": "incomplete_text",
-          "rows": 0,
-          "chargeIds": [],
+          "rows": 1,
+          "chargeIds": [
+            "fl-noise-violation"
+          ],
           "summary": "An official response does not contain complete text for the requested provision.",
           "nextStep": "Re-fetch the complete official section before considering publication."
         },
         {
           "kind": "technical_seed_failure",
-          "rows": 1,
-          "chargeIds": [
-            "fl-noise-violation"
-          ],
+          "rows": 0,
+          "chargeIds": [],
           "summary": "The source import or seed recorded a technical error for this row.",
           "nextStep": "Resolve the importer or seed error, then regenerate the committed manifest."
         },
@@ -264,8 +264,8 @@
         "source_access": 0,
         "missing_import": 0,
         "stale_record": 0,
-        "incomplete_text": 0,
-        "technical_seed_failure": 1,
+        "incomplete_text": 1,
+        "technical_seed_failure": 0,
         "identity_review": 91
       },
       "staleRows": 0,
@@ -276,7 +276,7 @@
     },
     {
       "jurisdiction": "GA",
-      "source": "Georgia General Assembly — official section text endpoint not publicly available",
+      "source": "Georgia General Assembly: official section text endpoint not publicly available",
       "manifestGeneratedAt": "2026-08-30T16:38:13.209Z",
       "catalogRows": 129,
       "rowsWithOfficialResponse": 0,
@@ -662,13 +662,13 @@
     {
       "jurisdiction": "NY",
       "source": "NY Open Legislation API (legislation.nysenate.gov)",
-      "manifestGeneratedAt": "2026-08-27T22:04:26.720Z",
+      "manifestGeneratedAt": "2026-09-10T04:58:55.942Z",
       "catalogRows": 121,
       "rowsWithOfficialResponse": 112,
       "selectableRows": 94,
       "withheldRows": 27,
       "rowsWithExplicitWithheldReason": 27,
-      "sources": 88,
+      "sources": 89,
       "snapshots": 96,
       "links": 96,
       "catalogAccountingRate": 1,
@@ -702,13 +702,6 @@
         },
         {
           "kind": "incomplete_text",
-          "rows": 0,
-          "chargeIds": [],
-          "summary": "An official response does not contain complete text for the requested provision.",
-          "nextStep": "Re-fetch the complete official section before considering publication."
-        },
-        {
-          "kind": "technical_seed_failure",
           "rows": 9,
           "chargeIds": [
             "ny-illegal-fireworks",
@@ -721,6 +714,13 @@
             "ny-probation-violation",
             "ny-wire-fraud"
           ],
+          "summary": "An official response does not contain complete text for the requested provision.",
+          "nextStep": "Re-fetch the complete official section before considering publication."
+        },
+        {
+          "kind": "technical_seed_failure",
+          "rows": 0,
+          "chargeIds": [],
           "summary": "The source import or seed recorded a technical error for this row.",
           "nextStep": "Resolve the importer or seed error, then regenerate the committed manifest."
         },
@@ -755,8 +755,8 @@
         "source_access": 0,
         "missing_import": 0,
         "stale_record": 0,
-        "incomplete_text": 0,
-        "technical_seed_failure": 9,
+        "incomplete_text": 9,
+        "technical_seed_failure": 0,
         "identity_review": 18
       },
       "staleRows": 0,
@@ -768,21 +768,21 @@
     {
       "jurisdiction": "NC",
       "source": "North Carolina General Statutes — ncleg.gov",
-      "manifestGeneratedAt": "2026-09-01T05:15:08.362Z",
+      "manifestGeneratedAt": "2026-09-03T05:42:07.104Z",
       "catalogRows": 130,
       "rowsWithOfficialResponse": 130,
-      "selectableRows": 6,
-      "withheldRows": 124,
-      "rowsWithExplicitWithheldReason": 124,
-      "sources": 5,
-      "snapshots": 6,
-      "links": 6,
+      "selectableRows": 70,
+      "withheldRows": 60,
+      "rowsWithExplicitWithheldReason": 60,
+      "sources": 66,
+      "snapshots": 70,
+      "links": 70,
       "catalogAccountingRate": 1,
       "officialResponseRate": 1,
-      "publishableRate": 0.046153846153846156,
-      "coveragePercentage": 4.615384615384616,
+      "publishableRate": 0.5384615384615384,
+      "coveragePercentage": 53.84615384615385,
       "officialResponsePercentage": 100,
-      "selectableCoveragePercentage": 4.615384615384616,
+      "selectableCoveragePercentage": 53.84615384615385,
       "officialSourceAvailability": "available",
       "gapBreakdown": [
         {
@@ -822,95 +822,50 @@
         },
         {
           "kind": "identity_review",
-          "rows": 124,
+          "rows": 60,
           "chargeIds": [
-            "nc-accessory-after-the-fact",
             "nc-aggravated-assault",
-            "nc-aiding-and-abetting",
-            "nc-alcohol-in-park",
-            "nc-animal-at-large",
-            "nc-animal-cruelty-misdemeanor",
             "nc-assault-in-the-first-degree",
-            "nc-assault-in-the-second-degree",
-            "nc-assault-in-the-third-degree",
             "nc-assault-on-peace-officer",
             "nc-assault-with-deadly-weapon",
             "nc-attempted-murder",
             "nc-attempted-robbery",
             "nc-attempted-sexual-assault",
-            "nc-auto-burglary",
-            "nc-bad-checks",
             "nc-bank-robbery",
-            "nc-burglary-in-the-first-degree",
-            "nc-burglary-in-the-second-degree",
             "nc-carjacking",
-            "nc-check-fraud",
-            "nc-child-sexual-abuse",
             "nc-commercial-burglary",
             "nc-computer-fraud",
             "nc-conspiracy",
-            "nc-contempt-of-court",
-            "nc-credit-card-fraud",
             "nc-criminal-attempt",
             "nc-criminal-solicitation",
             "nc-criminally-negligent-homicide",
             "nc-curfew-violation",
             "nc-defective-vehicle-equipment",
-            "nc-discharge-of-firearm-in-city",
             "nc-distribution-of-controlled-substance",
-            "nc-disturbing-the-peace",
             "nc-domestic-violence-assault",
-            "nc-domestic-violence-protective-order-violation",
-            "nc-driving-while-license-revoked",
             "nc-driving-while-suspended",
-            "nc-driving-without-insurance",
             "nc-drug-school-zone-enhancement",
             "nc-drug-trafficking",
-            "nc-dui-first-offense",
             "nc-dui-second-offense",
             "nc-dui-third-offense",
-            "nc-dwi",
-            "nc-embezzlement",
             "nc-expired-inspection",
-            "nc-expired-registration",
-            "nc-failure-to-appear",
-            "nc-failure-to-pay-child-support",
             "nc-fake-id",
-            "nc-false-info-to-police",
-            "nc-felon-in-possession-of-firearm",
             "nc-felony-murder",
             "nc-firearm-in-felony-enhancement",
-            "nc-forgery",
-            "nc-gang-enhancement",
             "nc-grand-theft-in-the-first-degree",
             "nc-grand-theft-in-the-second-degree",
             "nc-harassment",
-            "nc-hate-crime-enhancement",
-            "nc-hit-and-run",
             "nc-hunting-fishing-no-license",
             "nc-illegal-camping",
-            "nc-illegal-fireworks",
-            "nc-indecent-exposure",
-            "nc-injury-to-personal-property",
-            "nc-insurance-fraud",
             "nc-involuntary-manslaughter",
             "nc-juvenile-delinquency-felony",
             "nc-juvenile-delinquency-misdemeanor",
-            "nc-juvenile-firearm-possession",
             "nc-juvenile-transfer-adult-court",
             "nc-larceny-misdemeanor",
-            "nc-littering",
-            "nc-loitering",
-            "nc-mail-fraud",
             "nc-maintaining-drug-house",
             "nc-manufacturing-controlled-substance",
-            "nc-menacing",
-            "nc-minor-in-possession",
             "nc-money-laundering",
-            "nc-murder-in-the-first-degree",
-            "nc-murder-in-the-second-degree",
             "nc-noise-violation",
-            "nc-open-container",
             "nc-panhandling",
             "nc-petty-theft",
             "nc-possession-marijuana-up-to-half-oz",
@@ -918,36 +873,17 @@
             "nc-possession-of-prohibited-weapon",
             "nc-possession-with-intent-to-distribute",
             "nc-probation-violation",
-            "nc-protective-order-violation",
-            "nc-public-intoxication",
-            "nc-rape-in-the-first-degree",
-            "nc-rape-in-the-second-degree",
             "nc-recidivist-enhancement",
-            "nc-residential-burglary",
             "nc-resist-delay-obstruct",
             "nc-resisting-arrest",
-            "nc-rico-organized-crime",
-            "nc-robbery-in-the-first-degree",
             "nc-robbery-in-the-second-degree",
             "nc-sexual-assault-in-the-first-degree",
-            "nc-sexual-assault-in-the-second-degree",
-            "nc-sexual-assault-in-the-third-degree",
-            "nc-sexual-exploitation-of-minor",
-            "nc-shoplifting",
             "nc-simple-assault",
-            "nc-solicitation",
-            "nc-statutory-rape",
             "nc-tax-fraud",
-            "nc-theft-by-receiving",
-            "nc-trespass-after-warning",
-            "nc-trespassing",
             "nc-truancy",
-            "nc-unlawful-carrying-of-weapon",
             "nc-unregistered-vehicle",
-            "nc-vandalism",
             "nc-vehicular-homicide",
-            "nc-voluntary-manslaughter",
-            "nc-wire-fraud"
+            "nc-voluntary-manslaughter"
           ],
           "summary": "Source material exists, but the catalog identity is not exact enough to publish.",
           "nextStep": "Review the exact section, subdivision, and catalog mapping before publication."
@@ -959,7 +895,7 @@
         "stale_record": 0,
         "incomplete_text": 0,
         "technical_seed_failure": 0,
-        "identity_review": 124
+        "identity_review": 60
       },
       "staleRows": 0,
       "manifestPath": "scripts/data-review/output/nc-source-manifest.json",
@@ -969,8 +905,8 @@
     },
     {
       "jurisdiction": "OH",
-      "source": "Ohio Laws — codes.ohio.gov",
-      "manifestGeneratedAt": "2026-08-29T20:32:26.031Z",
+      "source": "Ohio Laws: codes.ohio.gov",
+      "manifestGeneratedAt": "2026-09-03T17:55:27.846Z",
       "catalogRows": 115,
       "rowsWithOfficialResponse": 115,
       "selectableRows": 13,
@@ -1322,7 +1258,7 @@
     {
       "jurisdiction": "SC",
       "source": "South Carolina Legislature Code of Laws (scstatehouse.gov)",
-      "manifestGeneratedAt": "2026-09-01T18:16:09.053Z",
+      "manifestGeneratedAt": "2026-09-10T05:00:48.249Z",
       "catalogRows": 128,
       "rowsWithOfficialResponse": 126,
       "selectableRows": 35,
@@ -1362,18 +1298,18 @@
         },
         {
           "kind": "incomplete_text",
-          "rows": 0,
-          "chargeIds": [],
-          "summary": "An official response does not contain complete text for the requested provision.",
-          "nextStep": "Re-fetch the complete official section before considering publication."
-        },
-        {
-          "kind": "technical_seed_failure",
           "rows": 2,
           "chargeIds": [
             "sc-mail-fraud",
             "sc-maintaining-drug-house"
           ],
+          "summary": "An official response does not contain complete text for the requested provision.",
+          "nextStep": "Re-fetch the complete official section before considering publication."
+        },
+        {
+          "kind": "technical_seed_failure",
+          "rows": 0,
+          "chargeIds": [],
           "summary": "The source import or seed recorded a technical error for this row.",
           "nextStep": "Resolve the importer or seed error, then regenerate the committed manifest."
         },
@@ -1481,8 +1417,8 @@
         "source_access": 0,
         "missing_import": 0,
         "stale_record": 0,
-        "incomplete_text": 0,
-        "technical_seed_failure": 2,
+        "incomplete_text": 2,
+        "technical_seed_failure": 0,
         "identity_review": 91
       },
       "staleRows": 0,
@@ -1494,7 +1430,7 @@
     {
       "jurisdiction": "TX",
       "source": "Texas Legislative Council TCSS static HTML (tcss.legis.texas.gov/resources)",
-      "manifestGeneratedAt": "2026-08-28T20:09:21.435Z",
+      "manifestGeneratedAt": "2026-09-10T05:02:25.468Z",
       "catalogRows": 111,
       "rowsWithOfficialResponse": 109,
       "selectableRows": 33,
@@ -1536,17 +1472,17 @@
         },
         {
           "kind": "incomplete_text",
-          "rows": 0,
-          "chargeIds": [],
+          "rows": 1,
+          "chargeIds": [
+            "tx-unregistered-vehicle"
+          ],
           "summary": "An official response does not contain complete text for the requested provision.",
           "nextStep": "Re-fetch the complete official section before considering publication."
         },
         {
           "kind": "technical_seed_failure",
-          "rows": 1,
-          "chargeIds": [
-            "tx-unregistered-vehicle"
-          ],
+          "rows": 0,
+          "chargeIds": [],
           "summary": "The source import or seed recorded a technical error for this row.",
           "nextStep": "Resolve the importer or seed error, then regenerate the committed manifest."
         },
@@ -1639,8 +1575,8 @@
         "source_access": 0,
         "missing_import": 1,
         "stale_record": 0,
-        "incomplete_text": 0,
-        "technical_seed_failure": 1,
+        "incomplete_text": 1,
+        "technical_seed_failure": 0,
         "identity_review": 76
       },
       "staleRows": 0,
@@ -1671,15 +1607,6 @@
       "kind": "source_access",
       "reason": "The official source did not provide a usable response for this row.",
       "nextStep": "Re-run the official PA source probe after the missing section routes or consolidated-statute source contract are restored, then regenerate the manifest."
-    },
-    {
-      "jurisdiction": "NC",
-      "rows": 124,
-      "coveragePercentage": 4.615384615384616,
-      "officialResponsePercentage": 100,
-      "kind": "identity_review",
-      "reason": "Source material exists, but the catalog identity is not exact enough to publish.",
-      "nextStep": "Review the exact section, subdivision, and catalog mapping before publication."
     },
     {
       "jurisdiction": "OH",
@@ -1727,6 +1654,15 @@
       "nextStep": "Review the exact section, subdivision, and catalog mapping before publication."
     },
     {
+      "jurisdiction": "NC",
+      "rows": 60,
+      "coveragePercentage": 53.84615384615385,
+      "officialResponsePercentage": 100,
+      "kind": "identity_review",
+      "reason": "Source material exists, but the catalog identity is not exact enough to publish.",
+      "nextStep": "Review the exact section, subdivision, and catalog mapping before publication."
+    },
+    {
       "jurisdiction": "NY",
       "rows": 27,
       "coveragePercentage": 77.68595041322314,
@@ -1740,9 +1676,9 @@
       "rows": 21,
       "coveragePercentage": 82.5,
       "officialResponsePercentage": 100,
-      "kind": "missing_import",
-      "reason": "The row is in the catalog but has no imported source record.",
-      "nextStep": "Add the row to the committed manifest and repeat seed validation."
+      "kind": "identity_review",
+      "reason": "Source material exists, but the catalog identity is not exact enough to publish.",
+      "nextStep": "Review the exact section, subdivision, and catalog mapping before publication."
     }
   ]
 }

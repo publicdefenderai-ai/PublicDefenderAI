@@ -228,6 +228,7 @@ interface CoverageCatalogRecord {
   dispositionReason: string;
   provisions: CoverageProvision[];
   apiStatus: string;
+  error?: string;
 }
 
 interface CoverageProvision {
@@ -582,11 +583,16 @@ function classifyGap(
   ) {
     return "source_access";
   }
-  if (record.apiStatus === "placeholder" || record.apiStatus === "withheld") {
+  if (record.apiStatus === "placeholder") {
     return "missing_import";
   }
   if (record.apiStatus === "api_error") {
-    return "technical_seed_failure";
+    return /seed|database|validation/i.test(record.error ?? "")
+      ? "technical_seed_failure"
+      : "incomplete_text";
+  }
+  if (record.apiStatus === "withheld") {
+    return "identity_review";
   }
   if (
     /complete|incomplete|section text|unavailable|could not be verified/i.test(
